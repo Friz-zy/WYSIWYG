@@ -51,8 +51,12 @@ class Main(QtGui.QMainWindow):
 		self.setWindowTitle(self.title)
 		self.webView = QtWebKit.QWebView()
 		self.webView.page().linkHovered.connect(self.showLink)
+		self.textEdit = QtGui.QTextEdit()
+		self.tabs = QtGui.QTabWidget()
+		self.tabs.addTab(self.webView, "Document")
+		self.tabs.addTab(self.textEdit, "Source")
 		self.new()
-		self.setCentralWidget(self.webView)
+		self.setCentralWidget(self.tabs)
 		self.menubar = self.menuBar()
 		self.toolbarMenu = self.addToolBar('New')
 		self.toolbarMenuW = self.addToolBar('WYSIWYG')
@@ -118,14 +122,14 @@ class Main(QtGui.QMainWindow):
 					    "edit-undo"), 'Undo', self)
 		self.undoAction.setShortcut('Ctrl+Z')
 		self.undoAction.setStatusTip('Undo')
-		self.undoAction.triggered.connect(self.executeJs)
+		self.undoAction.triggered.connect(self.undo)
 		self.toolbarMenu.addAction(self.undoAction)
 
 		self.redoAction = QtGui.QAction(QtGui.QIcon.fromTheme(
 					    "edit-redo"), 'Redo', self)
 		self.redoAction.setShortcut('Ctrl++Shift+Z')
 		self.redoAction.setStatusTip('Redo')
-		self.redoAction.triggered.connect(self.executeJs)
+		self.redoAction.triggered.connect(self.redo)
 		self.toolbarMenu.addAction(self.redoAction)
 		self.toolbarMenu.addSeparator ()
 
@@ -340,6 +344,20 @@ class Main(QtGui.QMainWindow):
 				UnicodeDecodeError,
 				UnicodeEncodeError) as err:
 				self.showCritical("Can not save " + filename, err)
+
+	def undo(self):
+		currentWidget = self.tabs.currentWidget()
+		if isinstance(currentWidget, QtWebKit.QWebView):
+			self.executeJs("Undo")
+		elif isinstance(currentWidget, QtGui.QTextEdit):
+			currentWidget.undo()
+
+	def redo(self):
+		currentWidget = self.tabs.currentWidget()
+		if isinstance(currentWidget, QtWebKit.QWebView):
+			self.executeJs("Redo")
+		elif isinstance(currentWidget, QtGui.QTextEdit):
+			currentWidget.redo()
 
 	def printIt(self):
 		if QtGui.QPrintDialog(self.printer,
