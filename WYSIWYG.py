@@ -377,7 +377,6 @@ class Main(QtGui.QMainWindow):
 			action = self.sender().text()
 		jScript = "document.execCommand('%s', %s, %s);" % (
 				    action, defaultUI, valueArgument)
-		print jScript
 		self.webView.page().mainFrame().evaluateJavaScript(jScript)
 
 	def font(self, font):
@@ -425,7 +424,8 @@ class Main(QtGui.QMainWindow):
 	def updateTextEdit(self):
 		currentWidget = self.tabs.currentWidget()
 		text = self.webView.page().mainFrame().toHtml()
-		if isinstance(currentWidget, QtGui.QTextEdit) and text != currentWidget.toPlainText():
+		if isinstance(currentWidget, QtGui.QTextEdit) \
+		  and text != currentWidget.toPlainText():
 			currentWidget.setPlainText(text)
 
 	def showLink(self, link, title, textContent):
