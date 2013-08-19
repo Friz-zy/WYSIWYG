@@ -52,9 +52,11 @@ class Main(QtGui.QMainWindow):
 		self.webView = QtWebKit.QWebView()
 		self.webView.page().linkHovered.connect(self.showLink)
 		self.textEdit = QtGui.QTextEdit()
+		self.textEdit.textChanged.connect(self.insertHtml)
 		self.tabs = QtGui.QTabWidget()
 		self.tabs.addTab(self.webView, "Document")
 		self.tabs.addTab(self.textEdit, "Source")
+		self.tabs.currentChanged.connect(self.updateTextEdit)
 		self.new()
 		self.setCentralWidget(self.tabs)
 		self.menubar = self.menuBar()
@@ -413,6 +415,18 @@ class Main(QtGui.QMainWindow):
 		if ok:
 			self.executeJs(action="insertImage",
 				valueArgument='"%s"' % text)
+
+	def insertHtml(self, html=""):
+		if not html:
+			html = self.textEdit.toPlainText()
+		if html != self.webView.page().mainFrame().toHtml():
+			self.webView.setHtml(html)
+
+	def updateTextEdit(self):
+		currentWidget = self.tabs.currentWidget()
+		text = self.webView.page().mainFrame().toHtml()
+		if isinstance(currentWidget, QtGui.QTextEdit) and text != currentWidget.toPlainText():
+			currentWidget.setPlainText(text)
 
 	def showLink(self, link, title, textContent):
 		self.statusBar().showMessage(link)
