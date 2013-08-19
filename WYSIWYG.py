@@ -263,6 +263,7 @@ class Main(QtGui.QMainWindow):
 	def loadConfig(self):
 		self.homeDirectory = os.path.expanduser("~")
 		self.title = 'WYSIWYG redactor'
+		self.currentUrl = ""
 		self.saveFilters = ";;".join(("Web pages (*.html *.htm)",
 					      "Images (*.png *.xpm *.jpg)",
 					      "Text files (*.txt)",
@@ -306,6 +307,7 @@ class Main(QtGui.QMainWindow):
 						  self.saveFilters)[0]
 		if file is not None and file != "":
 			self.webView.setUrl(QtCore.QUrl("file://" + file))
+			self.currentUrl = file
 
 	def savePageBeforeClose(self):
 		if self.webView.page().isModified():
@@ -318,8 +320,8 @@ class Main(QtGui.QMainWindow):
 			return 1
 
 	def save(self):
-		if "about:blank" not in self.webView.url().toString():
-			self.saveHtml(self.webView.url().toString().replace("file://", ""))
+		if self.currentUrl:
+			self.saveHtml(self.currentUrl)
 		else:
 			self.saveAs()
 
@@ -330,7 +332,7 @@ class Main(QtGui.QMainWindow):
 		filename = self.showFileSaveDialog(os.path.join(self.homeDirectory, title),
 									  self.saveFilters)[0]
 		if filename is not None and filename != "":
-			self.webView.url().setUrl("file://" + filename)
+			self.currentUrl = filename
 			self.saveHtml(filename)
 
 	def saveHtml(self, filename):
