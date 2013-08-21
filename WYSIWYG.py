@@ -338,8 +338,8 @@ class Main(QtGui.QMainWindow):
 	def saveHtml(self, filename):
 		if filename is not None and filename != "":
 			data = self.webView.page().mainFrame().toHtml()
-			if "!doctype" not in data:
-				data = "<!doctype html>\n" + data
+			if "!DOCTYPE" not in data:
+				data = "<!DOCTYPE html>\n" + data
 			try:
 				with codecs.open(filename, encoding="utf-8", mode="w") as f:
 					f.write(data)
