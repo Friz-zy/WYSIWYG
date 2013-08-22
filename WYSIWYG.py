@@ -310,7 +310,7 @@ class Main(QtGui.QMainWindow):
 			self.currentUrl = file
 
 	def savePageBeforeClose(self):
-		if self.webView.page().isModified():
+		if self.webView.page().isModified() or self.textEdit.document.isModified():
 			choice = self.showChoice("The document has been modified",
 					      "Do you want to save your changes?")
 			if choice == -1:
