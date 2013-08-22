@@ -467,12 +467,12 @@ class Main(QtGui.QMainWindow):
 			'Input Dialog', '%s' % (message))
 
 	def closeEvent(self, e):
-		if self.savePageBeforeClose() == -1:
-			return 0
-		self.saveConfig()
-		print "bye!"
-		self.close()
-
+		if self.savePageBeforeClose() != -1:
+			self.saveConfig()
+			print "bye!"
+			self.close()
+		else:
+			e.ignore()
 
 if __name__ == "__main__":
 	app = QtGui.QApplication(sys.argv)
