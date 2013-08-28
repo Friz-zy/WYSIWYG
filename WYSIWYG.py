@@ -444,7 +444,9 @@ class Main(QtGui.QMainWindow):
 				text = highlight(text, self.lexer, HtmlFormatter())
 				css = HtmlFormatter().get_style_defs('.highlight')
 				self.textEdit.document().setDefaultStyleSheet(css)
-			currentWidget.setHtml(text)
+				currentWidget.setHtml(text)
+			else:
+				currentWidget.setPlainText(text)
 
 	def showLink(self, link, title, textContent):
 		self.statusBar().showMessage(link)
