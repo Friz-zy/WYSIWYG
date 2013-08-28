@@ -34,7 +34,14 @@ import codecs
 import urllib2
 
 try:
-  from PySide import QtCore, QtGui, QtWebKit, QtNetwork
+	from pygments import highlight
+	from pygments.lexers import get_lexer_by_name
+	from pygments.formatters import HtmlFormatter
+except:
+	print >> sys.stderr, "Warning: can't load pygments, highlighter not available"
+
+try:
+	from PySide import QtCore, QtGui, QtWebKit, QtNetwork
 except:
 	try:
 		from PyQt4 import QtCore, QtGui, QtWebKit, QtNetwork
@@ -290,6 +297,11 @@ class Main(QtGui.QMainWindow):
 				"Subtitle": "h6",
 				"Paragraph": "p",
 				"Preformatted": "pre",}
+		# highlighter
+		try:
+			self.lexer = get_lexer_by_name('html')
+		except:
+			self.lexer = False
 
 	def saveConfig(self):
 		pass
@@ -428,7 +440,11 @@ class Main(QtGui.QMainWindow):
 		text = self.webView.page().mainFrame().toHtml()
 		if isinstance(currentWidget, QtGui.QTextEdit) \
 		  and text != currentWidget.toPlainText():
-			currentWidget.setPlainText(text)
+			if self.lexer:
+				text = highlight(text, self.lexer, HtmlFormatter())
+				css = HtmlFormatter().get_style_defs('.highlight')
+				self.textEdit.document().setDefaultStyleSheet(css)
+			currentWidget.setHtml(text)
 
 	def showLink(self, link, title, textContent):
 		self.statusBar().showMessage(link)
