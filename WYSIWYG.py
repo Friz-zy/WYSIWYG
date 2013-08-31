@@ -145,7 +145,7 @@ class Main(QtGui.QMainWindow):
 		# font
 		self.fontMenu = self.menubar.addMenu(QtGui.QIcon.fromTheme(
 					"preferences-desktop-font"),'&Font')
-		
+
 		self.comboFont = QtGui.QComboBox(self)
 		for font in sorted(self.fonts):
 			self.comboFont.addItem(font)
@@ -162,6 +162,19 @@ class Main(QtGui.QMainWindow):
 		self.spinSizeAction = QtGui.QWidgetAction(self)
 		self.spinSizeAction.setDefaultWidget(self.spinSize)
 		self.fontMenu.addAction(self.spinSizeAction)
+
+		# insert
+		self.insertMenu = self.menubar.addMenu('&Insert')
+
+		self.insertHTMLAction = QtGui.QAction('HTML', self)
+		self.insertHTMLAction.setStatusTip('insert HTML')
+		self.insertHTMLAction.triggered.connect(self.insertHTML)
+		self.insertMenu.addAction(self.insertHTMLAction)
+
+		self.insertTextAction = QtGui.QAction('Text', self)
+		self.insertTextAction.setStatusTip('insert Text')
+		self.insertTextAction.triggered.connect(self.insertText)
+		self.insertMenu.addAction(self.insertTextAction)
 
 		# WYSIWYG toolbar and actions
 		self.comboHeader = QtGui.QComboBox(self)
@@ -260,12 +273,14 @@ class Main(QtGui.QMainWindow):
 		self.insertlinkAction.setStatusTip('Insert link')
 		self.insertlinkAction.triggered.connect(self.insertLink)
 		self.toolbarMenuW.addAction(self.insertlinkAction)
+		self.insertMenu.addAction(self.insertlinkAction)
 
 		self.insertimageAction = QtGui.QAction(QtGui.QIcon.fromTheme(
 					  "insert-image"), 'Insertimage', self)
 		self.insertimageAction.setStatusTip('Insert image')
 		self.insertimageAction.triggered.connect(self.insertImage)
 		self.toolbarMenuW.addAction(self.insertimageAction)
+		self.insertMenu.addAction(self.insertimageAction)
 
 	def loadConfig(self):
 		self.homeDirectory = os.path.expanduser("~")
@@ -399,6 +414,10 @@ class Main(QtGui.QMainWindow):
 
 	def size(self, size):
 		self.executeJs("fontSize", valueArgument=size)
+
+	def insertHTML(self): pass
+
+	def insertText(self): pass
 
 	def header(self, header):
 		self.executeJs("formatBlock",
