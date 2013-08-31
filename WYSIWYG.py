@@ -424,9 +424,17 @@ class Main(QtGui.QMainWindow):
 	def size(self, size):
 		self.executeJs("fontSize", valueArgument=size)
 
-	def insertHTML(self): pass
+	def insertHTML(self, html=""):
+		if not html:
+			html, ok = self.getInput('Enter html')
+		if html:
+			self.executeJs("insertHTML", valueArgument='"%s"' % html)
 
-	def insertText(self): pass
+	def insertText(self, text=""):
+		if not text:
+			text, ok = self.getInput('Enter text')
+		if text:
+			self.executeJs("insertText", valueArgument='"%s"' % text)
 
 	def header(self, header):
 		self.executeJs("formatBlock",
