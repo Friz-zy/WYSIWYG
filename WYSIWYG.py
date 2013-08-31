@@ -180,7 +180,6 @@ class Main(QtGui.QMainWindow):
 		self.comboHeader = QtGui.QComboBox(self)
 		for key in sorted(self.headers.keys()):
 			self.comboHeader.addItem(key)
-		#self.comboHeader.setEditable(True)
 		self.comboHeader.activated['QString'].connect(self.header)
 		self.toolbarMenuW.addWidget(self.comboHeader)
 
@@ -189,24 +188,28 @@ class Main(QtGui.QMainWindow):
 		self.boldAction.setStatusTip('Bold')
 		self.boldAction.triggered.connect(self.executeJs)
 		self.toolbarMenuW.addAction(self.boldAction)
+		self.fontMenu.addAction(self.boldAction)
 
 		self.italicAction = QtGui.QAction(QtGui.QIcon.fromTheme(
 				    "format-text-italic"), 'Italic', self)
 		self.italicAction.setStatusTip('Italic')
 		self.italicAction.triggered.connect(self.executeJs)
 		self.toolbarMenuW.addAction(self.italicAction)
+		self.fontMenu.addAction(self.italicAction)
 
 		self.underlineAction = QtGui.QAction(QtGui.QIcon.fromTheme(
 				"format-text-underline"), 'Underline', self)
 		self.underlineAction.setStatusTip('Underline')
 		self.underlineAction.triggered.connect(self.executeJs)
 		self.toolbarMenuW.addAction(self.underlineAction)
+		self.fontMenu.addAction(self.underlineAction)
 
 		self.strikethroughAction = QtGui.QAction(QtGui.QIcon.fromTheme(
 			    "format-text-strikethrough"), 'Strikethrough', self)
 		self.strikethroughAction.setStatusTip('Strikethrough')
 		self.strikethroughAction.triggered.connect(self.executeJs)
 		self.toolbarMenuW.addAction(self.strikethroughAction)
+		self.fontMenu.addAction(self.strikethroughAction)
 
 		self.outdentAction = QtGui.QAction(QtGui.QIcon.fromTheme(
 				  "format-indent-less"), 'outdent', self)
@@ -225,36 +228,42 @@ class Main(QtGui.QMainWindow):
 		self.insertOrderedListAction.setStatusTip('Insert Ordered List')
 		self.insertOrderedListAction.triggered.connect(self.executeJs)
 		self.toolbarMenuW.addAction(self.insertOrderedListAction)
+		self.insertMenu.addAction(self.insertOrderedListAction)
 
 		self.insertUnorderedListAction = QtGui.QAction(QtGui.QIcon.fromTheme(
 				  "format-list-unordered"), 'insertUnorderedList', self)
 		self.insertUnorderedListAction.setStatusTip('Insert Unordered List')
 		self.insertUnorderedListAction.triggered.connect(self.executeJs)
 		self.toolbarMenuW.addAction(self.insertUnorderedListAction)
+		self.insertMenu.addAction(self.insertUnorderedListAction)
 
 		self.justifyleftAction = QtGui.QAction(QtGui.QIcon.fromTheme(
 				  "format-justify-left"), 'Justifyleft', self)
 		self.justifyleftAction.setStatusTip('Justify left')
 		self.justifyleftAction.triggered.connect(self.executeJs)
 		self.toolbarMenuW.addAction(self.justifyleftAction)
+		self.fontMenu.addAction(self.justifyleftAction)
 
 		self.justifycenterAction = QtGui.QAction(QtGui.QIcon.fromTheme(
 				"format-justify-center"), 'Justifycenter', self)
 		self.justifycenterAction.setStatusTip('Justify center')
 		self.justifycenterAction.triggered.connect(self.executeJs)
 		self.toolbarMenuW.addAction(self.justifycenterAction)
+		self.fontMenu.addAction(self.justifycenterAction)
 
 		self.justifyrightAction = QtGui.QAction(QtGui.QIcon.fromTheme(
 				  "format-justify-right"), 'Justifyright', self)
 		self.justifyrightAction.setStatusTip('Justify right')
 		self.justifyrightAction.triggered.connect(self.executeJs)
 		self.toolbarMenuW.addAction(self.justifyrightAction)
+		self.fontMenu.addAction(self.justifyrightAction)
 
 		self.justifyfullAction = QtGui.QAction(QtGui.QIcon.fromTheme(
 				  "format-justify-fill"), 'Justifyfull', self)
 		self.justifyfullAction.setStatusTip('Justify full')
 		self.justifyfullAction.triggered.connect(self.executeJs)
 		self.toolbarMenuW.addAction(self.justifyfullAction)
+		self.fontMenu.addAction(self.justifyfullAction)
 
 		self.colorAction = QtGui.QAction(QtGui.QIcon.fromTheme(
 				  "format-text-color"),'Color', self)
