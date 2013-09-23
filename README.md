@@ -1,7 +1,7 @@
-WYSIWYG
+PWR
 =======
 
-Simple WYSIWYG html redactor
+Simple python wysiwyg redactor based on Qt, QtWebkit and html
 
 Depending on:
 * PySide or PyQT
