@@ -15,7 +15,7 @@ setup(
         # If any package contains *.txt or *.rst or *.md files, include them:
         '': ['*.txt', '*.rst', '*.md'],
         # And include any *.msg files found in the package, too:
-        name : ['images/*', '*.*'],
+        'pwr' : ['images/*', '*.*'],
     },
     packages=find_packages(),
     long_description='Simple python wysiwyg redactor based on Qt, QtWebkit and html',
