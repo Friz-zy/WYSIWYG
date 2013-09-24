@@ -269,7 +269,7 @@ class WYSIWYG(QtGui.QMainWindow):
 
 	def loadConfig(self):
 		self.homeDirectory = os.path.expanduser("~")
-		self.title = 'WYSIWYG redactor'
+		self.title = 'python WYSIWYG redactor'
 		self.currentUrl = ""
 		self.saveFilters = ";;".join(("Web pages (*.html *.htm)",
 					      "Images (*.png *.xpm *.jpg)",
