@@ -23,8 +23,8 @@ setup(
 #    test_suite='tests',
     entry_points={
         'console_scripts':
-            ['pwr = pwr.wysiwyg',],
+            ['pwr = pwr.wysiwyg:main',],
         'gui_scripts':
-            ['pwr = pwr.wysiwyg',],
+            ['pwr = pwr.wysiwyg:main',],
         }
 )
