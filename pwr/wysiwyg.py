@@ -49,7 +49,7 @@ except:
 		print >> sys.stderr, "Error: can't load PySide or PyQT"
 		sys.exit()
 
-class Main(QtGui.QMainWindow):
+class WYSIWYG(QtGui.QMainWindow):
 	def __init__(self, parent=None):
 		QtGui.QMainWindow.__init__(self, parent)
 
@@ -293,7 +293,7 @@ class Main(QtGui.QMainWindow):
 
 	def loadConfig(self):
 		self.homeDirectory = os.path.expanduser("~")
-		self.title = 'WYSIWYG redactor'
+		self.title = 'python WYSIWYG redactor'
 		self.currentUrl = ""
 		self.saveFilters = ";;".join(("Web pages (*.html *.htm)",
 					      "Images (*.png *.xpm *.jpg)",
@@ -528,8 +528,11 @@ class Main(QtGui.QMainWindow):
 		else:
 			e.ignore()
 
-if __name__ == "__main__":
+def main():
 	app = QtGui.QApplication(sys.argv)
-	myapp = Main()
+	myapp = WYSIWYG()
 	myapp.show()
 	sys.exit(app.exec_())
+
+if __name__ == "__main__":
+	main()
