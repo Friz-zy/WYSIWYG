@@ -299,6 +299,7 @@ class WYSIWYG(QtGui.QMainWindow):
 
 	def loadConfig(self):
 		self.homeDirectory = os.path.expanduser("~")
+		self.lastDirectory = self.homeDirectory
 		self.title = 'python WYSIWYG redactor'
 		self.currentUrl = ""
 		self.saveFilters = ";;".join(("Web pages (*.html *.htm)",
@@ -345,11 +346,13 @@ class WYSIWYG(QtGui.QMainWindow):
 	def open(self):
 		if self.savePageBeforeClose() == -1:
 			return 0
-		file = self.showFileOpenDialog(self.homeDirectory,
+		file = self.showFileOpenDialog(self.lastDirectory,
 						  self.saveFilters)[0]
 		if file is not None and file != "":
 			self.webView.setUrl(QtCore.QUrl("file://" + file))
 			self.currentUrl = file
+			self.lastDirectory = os.path.dirname(file)
+			
 
 	def savePageBeforeClose(self):
 		if self.webView.page().isModified() or self.textEdit.document().isModified():
@@ -371,10 +374,11 @@ class WYSIWYG(QtGui.QMainWindow):
 		title = self.webView.title()
 		if title == "":
 			title = "Untitled"
-		filename = self.showFileSaveDialog(os.path.join(self.homeDirectory, title),
+		filename = self.showFileSaveDialog(os.path.join(self.lastDirectory, title),
 									  self.saveFilters)[0]
 		if filename is not None and filename != "":
 			self.currentUrl = filename
+			self.lastDirectory = os.path.dirname(filename)
 			self.saveHtml(filename)
 
 	def saveHtml(self, filename):
