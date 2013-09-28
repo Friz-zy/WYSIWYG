@@ -32,6 +32,7 @@ import os
 import sys
 import codecs
 import urllib2
+from InputTextDialog import InputTextDialog
 
 try:
 	from pygments import highlight
@@ -59,7 +60,7 @@ class WYSIWYG(QtGui.QMainWindow):
 		self.webView = QtWebKit.QWebView()
 		self.webView.page().linkHovered.connect(self.showLink)
 		self.textEdit = QtGui.QTextEdit()
-		self.textEdit.textChanged.connect(self.insertHtml)
+		self.textEdit.textChanged.connect(self.updateWebView)
 		self.tabs = QtGui.QTabWidget()
 		self.tabs.addTab(self.webView, "Document")
 		self.tabs.addTab(self.textEdit, "Source")
@@ -166,10 +167,10 @@ class WYSIWYG(QtGui.QMainWindow):
 		# insert
 		self.insertMenu = self.menubar.addMenu('&Insert')
 
-		self.insertHTMLAction = QtGui.QAction('HTML', self)
-		self.insertHTMLAction.setStatusTip('insert HTML')
-		self.insertHTMLAction.triggered.connect(self.insertHTML)
-		self.insertMenu.addAction(self.insertHTMLAction)
+		self.insertHtmlAction = QtGui.QAction('HTML', self)
+		self.insertHtmlAction.setStatusTip('insert HTML')
+		self.insertHtmlAction.triggered.connect(self.insertHtml)
+		self.insertMenu.addAction(self.insertHtmlAction)
 
 		self.insertTextAction = QtGui.QAction('Text', self)
 		self.insertTextAction.setStatusTip('insert Text')
@@ -424,15 +425,16 @@ class WYSIWYG(QtGui.QMainWindow):
 	def size(self, size):
 		self.executeJs("fontSize", valueArgument=size)
 
-	def insertHTML(self, html=""):
+	def insertHtml(self, html=""):
 		if not html:
-			html, ok = self.getInput('Enter html')
+			html = self.getTextInput(message="Input your html here",
+							text="<h1>hello world!</h1>")
 		if html:
 			self.executeJs("insertHTML", valueArgument='"%s"' % html)
 
 	def insertText(self, text=""):
 		if not text:
-			text, ok = self.getInput('Enter text')
+			text = self.getTextInput()
 		if text:
 			self.executeJs("insertText", valueArgument='"%s"' % text)
 
@@ -454,18 +456,18 @@ class WYSIWYG(QtGui.QMainWindow):
 			valueArgument='"%s"' % color.name())
 
 	def insertLink(self):
-		text, ok = self.getInput('Enter link url')
+		text, ok = self.getLineInput('Enter link url')
 		if ok:
 			self.executeJs(action="createLink",
 				valueArgument='"%s"' % text)
 
 	def insertImage(self):
-		text, ok = self.getInput('Enter image url')
+		text, ok = self.getLineInput('Enter image url')
 		if ok:
 			self.executeJs(action="insertImage",
 				valueArgument='"%s"' % text)
 
-	def insertHtml(self, html=""):
+	def updateWebView(self, html=""):
 		if not html:
 			html = self.textEdit.toPlainText()
 		if html != self.webView.page().mainFrame().toHtml():
@@ -516,9 +518,18 @@ class WYSIWYG(QtGui.QMainWindow):
 			return False
 		return -1
 
-	def getInput(self, message):
+	def getLineInput(self, message):
 		return QtGui.QInputDialog.getText(self,
 			'Input Dialog', '%s' % (message))
+
+	def getTextInput(self,title="Input Dialog", message="Input your text here",
+								text="hello world!"):
+		dlg = InputTextDialog(title,
+				      message,
+				      text,
+				      self)
+		if dlg.exec_():
+			return dlg.getPlainText()
 
 	def closeEvent(self, e):
 		if self.savePageBeforeClose() != -1:
