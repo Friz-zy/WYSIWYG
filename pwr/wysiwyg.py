@@ -177,6 +177,11 @@ class WYSIWYG(QtGui.QMainWindow):
 		self.insertTextAction.triggered.connect(self.insertText)
 		self.insertMenu.addAction(self.insertTextAction)
 
+		self.insertTagAction = QtGui.QAction('Tag', self)
+		self.insertTagAction.setStatusTip('insert Tag')
+		self.insertTagAction.triggered.connect(self.insertTag)
+		self.insertMenu.addAction(self.insertTagAction)
+
 		# WYSIWYG toolbar and actions
 		self.comboHeader = QtGui.QComboBox(self)
 		for key in sorted(self.headers.keys()):
@@ -431,20 +436,36 @@ class WYSIWYG(QtGui.QMainWindow):
 				text = self.webView.selectedHtml()
 			else:
 				text = "<h1>hello world!</h1>"
-			html = self.getTextInput(message="Input your html here",
+			html, ok = self.getTextInput(message="Input your html here",
 								      text=text)
 		if html:
 			self.executeJs("insertHTML", valueArgument='"%s"' % html)
 
 	def insertText(self, text=""):
 		if not text:
-			txt = self.webView.selectedText()
+			txt= self.webView.selectedText()
 			print txt
 			if not txt:
 				txt = "hello world!"
-			text = self.getTextInput(text=txt)
+			text, ok = self.getTextInput(text=txt)
 		if text:
 			self.executeJs("insertText", valueArgument='"%s"' % text)
+
+	def insertTag(self, tag=""):
+		if not tag:
+			tag, ok = self.getLineInput("Enter your tag")
+		if tag:
+			if tag.strip("</ >") not in ["img", "br", "input", "hr"]:
+				tag = tag.strip("</ >")
+				html = "<%s>%s</%s>" % (tag,
+							self.webView.selectedText(),
+							tag)
+			else:
+				if "<" != tag.strip(" ")[0]:
+					tag = "<%s>" % tag
+				html = tag
+		if html:
+			self.executeJs("insertHTML", valueArgument='"%s"' % html)
 
 	def header(self, header):
 		self.executeJs("formatBlock",

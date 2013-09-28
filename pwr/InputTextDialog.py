@@ -58,10 +58,16 @@ class InputTextDialog(QtGui.QDialog, Ui_Dialog):
 		self.textEdit.setHtml(text)
 
 	def getPlainText(self):
-		return self.textEdit.toPlainText()
+		if self.textEdit.toPlainText():
+			return (self.textEdit.toPlainText(), True)
+		else:
+			return ("", False)
 
 	def getHtml(self):
-		return self.textEdit.toHtml()
+		if self.textEdit.toHtml():
+			return (self.textEdit.toHtml(), True)
+		else:
+			return ("", False)
 
 if __name__ == "__main__":
 	app = QtGui.QApplication(sys.argv)
