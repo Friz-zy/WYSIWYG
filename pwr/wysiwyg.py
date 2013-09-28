@@ -415,8 +415,8 @@ class WYSIWYG(QtGui.QMainWindow):
 			self.webView.print_(self.printer)
 
 	def about(self):
-		about = "\n".join("Simple WYSIWYG redactor.",
-				  "Explore more on https://github.com/Friz-zy/WYSIWYG")
+		about = "\n".join(("Simple WYSIWYG redactor.",
+				  "Explore more on https://github.com/Friz-zy/WYSIWYG"))
 		self.showMessage("About WYSIWYG", about)
 
 	def executeJs(self, action="", defaultUI="false", 
