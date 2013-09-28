@@ -427,14 +427,22 @@ class WYSIWYG(QtGui.QMainWindow):
 
 	def insertHtml(self, html=""):
 		if not html:
+			if self.webView.selectedText():
+				text = self.webView.selectedHtml()
+			else:
+				text = "<h1>hello world!</h1>"
 			html = self.getTextInput(message="Input your html here",
-							text="<h1>hello world!</h1>")
+								      text=text)
 		if html:
 			self.executeJs("insertHTML", valueArgument='"%s"' % html)
 
 	def insertText(self, text=""):
 		if not text:
-			text = self.getTextInput()
+			txt = self.webView.selectedText()
+			print txt
+			if not txt:
+				txt = "hello world!"
+			text = self.getTextInput(text=txt)
 		if text:
 			self.executeJs("insertText", valueArgument='"%s"' % text)
 
