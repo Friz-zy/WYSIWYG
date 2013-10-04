@@ -11,12 +11,6 @@ setup(
     keywords = module.__keywords__,
     url = module.__url__,
     install_requires = ['PySide','Pygments'],
-    package_data = {
-        # If any package contains *.txt or *.rst or *.md files, include them:
-        '': ['*.txt', '*.rst', '*.md'],
-        # And include any *.msg files found in the package, too:
-        'pwr' : ['images/*', '*.*'],
-    },
     packages=find_packages(),
     long_description='Simple python wysiwyg redactor based on Qt, QtWebkit and html',
     include_package_data=True,
