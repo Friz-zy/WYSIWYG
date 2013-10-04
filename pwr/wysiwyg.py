@@ -31,7 +31,9 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import os
 import sys
 import codecs
+import shutil
 import urllib2
+from configobj import ConfigObj
 from InputTextDialog import InputTextDialog
 
 try:
@@ -298,7 +300,19 @@ class WYSIWYG(QtGui.QMainWindow):
 		self.insertMenu.addAction(self.insertimageAction)
 
 	def loadConfig(self):
-		self.homeDirectory = os.path.expanduser("~")
+		self.homeDirectory = os.path.join(os.path.expanduser("~"),"pwr")
+		self.homeConfig = os.path.join(self.homeDirectory, "pwr.conf")
+		if not os.path.isdir(self.homeDirectory):
+			try:
+				shutil.copy("config", self.homeDirectory)
+			except:
+				pass
+		if not os.path.isfile(self.homeConfig):
+			try:
+				shutil.copy(os.path.join("config","pwr.conf"),
+								self.homeConfig)
+			except:
+				pass
 		self.lastDirectory = self.homeDirectory
 		self.title = 'python WYSIWYG redactor'
 		self.currentUrl = ""

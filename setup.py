@@ -10,7 +10,7 @@ setup(
     license = module.__license__,
     keywords = module.__keywords__,
     url = module.__url__,
-    install_requires = ['PySide','Pygments'],
+    install_requires = ['PySide','Pygments','configobj'],
     packages=find_packages(),
     long_description='Simple python wysiwyg redactor based on Qt, QtWebkit and html',
     include_package_data=True,
