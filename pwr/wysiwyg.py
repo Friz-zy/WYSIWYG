@@ -300,21 +300,42 @@ class WYSIWYG(QtGui.QMainWindow):
 		self.insertMenu.addAction(self.insertimageAction)
 
 	def loadConfig(self):
-		self.homeDirectory = os.path.join(os.path.expanduser("~"),"pwr")
+		self.homeDirectory = os.path.join(os.path.expanduser("~"), "pwr")
 		self.homeConfig = os.path.join(self.homeDirectory, "pwr.conf")
+		self.defaultDirectory = os.path.join(os.path.abspath(
+						      os.path.dirname(
+				sys.modules[self.__module__].__file__)),
+								"config")
+		self.defaultConfig = os.path.join(self.defaultDirectory, "pwr.conf")
 		if not os.path.isdir(self.homeDirectory):
 			try:
-				shutil.copy("config", self.homeDirectory)
+				shutil.copytree(self.defaultDirectory, self.homeDirectory)
 			except:
-				pass
+				print 1
 		if not os.path.isfile(self.homeConfig):
 			try:
-				shutil.copy(os.path.join("config","pwr.conf"),
-								self.homeConfig)
+				shutil.copy(self.defaultConfig, self.homeConfig)
 			except:
-				pass
+				print 2
+		try:
+			self.config = ConfigObj(self.defaultConfig)
+			self.userConfig = ConfigObj(self.homeConfig)
+		except:
+			print 3
+
+		def setConfigField(field, default):
+			if not field and default:
+				print "can not set empty field to self"
+				return 1
+			if self.userConfig[field]:
+				self.title = self.userConfig[field]
+			elif self.config[field]:
+				self.title = self.config[field]
+			else:
+				self.__dict__[field] = default
+
+		setConfigField('title', 'python WYSIWYG redactor')
 		self.lastDirectory = self.homeDirectory
-		self.title = 'python WYSIWYG redactor'
 		self.currentUrl = ""
 		self.saveFilters = ";;".join(("Web pages (*.html *.htm)",
 					      "Images (*.png *.xpm *.jpg)",
