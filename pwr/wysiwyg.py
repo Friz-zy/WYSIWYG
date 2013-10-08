@@ -61,6 +61,8 @@ class WYSIWYG(QtGui.QMainWindow):
 		self.setWindowTitle(self.title)
 		self.webView = QtWebKit.QWebView()
 		self.webView.page().linkHovered.connect(self.showLink)
+		self.currentUrl = QtGui.QLineEdit("")
+		self.currentUrl.returnPressed.connect(self.urlChanged)
 		self.textEdit = QtGui.QTextEdit()
 		self.textEdit.textChanged.connect(self.updateWebView)
 		self.tabs = QtGui.QTabWidget()
@@ -183,6 +185,42 @@ class WYSIWYG(QtGui.QMainWindow):
 		self.insertTagAction.setStatusTip('insert Tag')
 		self.insertTagAction.triggered.connect(self.insertTag)
 		self.insertMenu.addAction(self.insertTagAction)
+
+		# navigation
+		self.navigationMenu = self.menubar.addMenu('&Navigation')
+		self.backAction = QtGui.QAction(QtGui.QIcon.fromTheme(
+					    "go-previous"),'&Back', self)
+		self.backAction.setStatusTip('Back')
+		self.backAction.triggered.connect(self.back)
+		self.navigationMenu.addAction(self.backAction)
+
+		self.forwardAction = QtGui.QAction(QtGui.QIcon.fromTheme(
+					      "go-next"),'&Forward', self)
+		self.forwardAction.setStatusTip('Forward')
+		self.forwardAction.triggered.connect(self.forward)
+		self.navigationMenu.addAction(self.forwardAction)
+
+		self.stopAction = QtGui.QAction(QtGui.QIcon.fromTheme(
+					  "process-stop"),'&Stop', self)
+		self.stopAction.setStatusTip('Stop')
+		self.stopAction.triggered.connect(self.stop)
+		self.navigationMenu.addAction(self.stopAction)
+
+		self.reloadAction = QtGui.QAction(QtGui.QIcon.fromTheme(
+					    "view-refresh"),'&Reload', self)
+		self.reloadAction.setStatusTip('Reload')
+		self.reloadAction.triggered.connect(self.reload)
+		self.navigationMenu.addAction(self.reloadAction)
+
+		self.urlAction = QtGui.QWidgetAction(self)
+		self.urlAction.setDefaultWidget(self.currentUrl)
+		self.navigationMenu.addAction(self.urlAction)
+		
+		self.runAction = QtGui.QAction(QtGui.QIcon.fromTheme(
+					    "system-run"),'&Run', self)
+		self.runAction.setStatusTip('Run')
+		self.runAction.triggered.connect(self.urlChanged)
+		self.navigationMenu.addAction(self.runAction)
 
 		# WYSIWYG toolbar and actions
 		self.comboHeader = QtGui.QComboBox(self)
@@ -336,7 +374,6 @@ class WYSIWYG(QtGui.QMainWindow):
 
 		setConfigField('title', 'python WYSIWYG redactor')
 		self.lastDirectory = self.homeDirectory
-		self.currentUrl = ""
 		self.saveFilters = ";;".join(("Web pages (*.html *.htm)",
 					      "Images (*.png *.xpm *.jpg)",
 					      "Text files (*.txt)",
@@ -378,14 +415,19 @@ class WYSIWYG(QtGui.QMainWindow):
 		self.webView.load(QtCore.QUrl(""))
 		self.webView.page().setContentEditable(True)
 
-	def open(self):
+	def urlChanged(self):
+		self.open(self.currentUrl.text())
+
+
+	def open(self, file=None):
 		if self.savePageBeforeClose() == -1:
 			return 0
-		file = self.showFileOpenDialog(self.lastDirectory,
-						  self.saveFilters)[0]
+		if not file:
+			file = self.showFileOpenDialog(self.lastDirectory,
+							self.saveFilters)[0]
 		if file is not None and file != "":
 			self.webView.setUrl(QtCore.QUrl("file://" + file))
-			self.currentUrl = file
+			self.currentUrl.setText(file)
 			self.lastDirectory = os.path.dirname(file)
 			
 
@@ -400,8 +442,8 @@ class WYSIWYG(QtGui.QMainWindow):
 			return 1
 
 	def save(self):
-		if self.currentUrl:
-			self.saveHtml(self.currentUrl)
+		if self.currentUrl.text():
+			self.saveHtml(self.currentUrl.text())
 		else:
 			self.saveAs()
 
@@ -412,7 +454,7 @@ class WYSIWYG(QtGui.QMainWindow):
 		filename = self.showFileSaveDialog(os.path.join(self.lastDirectory, title),
 									  self.saveFilters)[0]
 		if filename is not None and filename != "":
-			self.currentUrl = filename
+			self.currentUrl.setText(filename)
 			self.lastDirectory = os.path.dirname(filename)
 			self.saveHtml(filename)
 
@@ -506,6 +548,18 @@ class WYSIWYG(QtGui.QMainWindow):
 		if html:
 			self.executeJs("insertHTML", valueArgument='"%s"' % html)
 
+	def back(self):
+		self.webView.back()
+
+	def forward(self):
+		self.webView.forward()
+
+	def stop(self):
+		self.webView.stop()
+
+	def reload(self):
+		self.webView.reload()
+
 	def header(self, header):
 		self.executeJs("formatBlock",
 				valueArgument='"%s"' % 
@@ -548,6 +602,7 @@ class WYSIWYG(QtGui.QMainWindow):
 		  and text != currentWidget.toPlainText():
 			if self.lexer:
 				text = highlight(text, self.lexer, HtmlFormatter())
+				#print text
 				css = HtmlFormatter().get_style_defs('.highlight')
 				self.textEdit.document().setDefaultStyleSheet(css)
 				currentWidget.setHtml(text)
