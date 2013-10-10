@@ -620,7 +620,8 @@ class WYSIWYG(QtGui.QMainWindow):
 		if not html:
 			html = self.textEdit.toPlainText()
 		if html != self.webView.page().mainFrame().toHtml():
-			self.webView.setHtml(html)
+			self.webView.setHtml(html,
+			  QtCore.QUrl().fromLocalFile(self.currentUrl.text()))
 
 	def updateTextEdit(self):
 		currentWidget = self.tabs.currentWidget()
