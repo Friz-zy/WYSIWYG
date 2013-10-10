@@ -60,6 +60,7 @@ class WYSIWYG(QtGui.QMainWindow):
 
 		self.setWindowTitle(self.title)
 		self.webView = QtWebKit.QWebView()
+		self.webView.settings().setAttribute(QtWebKit.QWebSettings.JavascriptEnabled, False)
 		self.webView.settings().setAttribute(QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
 		self.webView.page().linkHovered.connect(self.showLink)
 		self.currentUrl = QtGui.QLineEdit("")
@@ -186,6 +187,16 @@ class WYSIWYG(QtGui.QMainWindow):
 		self.insertTagAction.setStatusTip('insert Tag')
 		self.insertTagAction.triggered.connect(self.insertTag)
 		self.insertMenu.addAction(self.insertTagAction)
+
+		# view
+		self.viewMenu = self.menubar.addMenu('&View')
+
+		self.jsRadioButton = QtGui.QRadioButton("Javascript enabled", self)
+		self.jsRadioButton.setChecked(False)
+		self.jsRadioButton.clicked.connect(self.enableJs)
+		self.jsAction = QtGui.QWidgetAction(self)
+		self.jsAction.setDefaultWidget(self.jsRadioButton)
+		self.viewMenu.addAction(self.jsAction)
 
 		# navigation
 		self.navigationMenu = self.menubar.addMenu('&Navigation')
@@ -503,7 +514,10 @@ class WYSIWYG(QtGui.QMainWindow):
 			action = self.sender().text()
 		jScript = "document.execCommand('%s', %s, %s);" % (
 				    action, defaultUI, valueArgument)
+		self.webView.settings().setAttribute(QtWebKit.QWebSettings.JavascriptEnabled, True)
 		self.webView.page().mainFrame().evaluateJavaScript(jScript)
+		if not self.jsRadioButton.isChecked():
+			self.webView.settings().setAttribute(QtWebKit.QWebSettings.JavascriptEnabled, False)
 
 	def font(self, font):
 		font = '"%s"' % font
@@ -548,6 +562,12 @@ class WYSIWYG(QtGui.QMainWindow):
 				html = tag
 		if html:
 			self.executeJs("insertHTML", valueArgument='"%s"' % html)
+
+	def enableJs(self):
+		if self.jsRadioButton.isChecked():
+			self.webView.settings().setAttribute(QtWebKit.QWebSettings.JavascriptEnabled, True)
+		else:
+			self.webView.settings().setAttribute(QtWebKit.QWebSettings.JavascriptEnabled, False)
 
 	def back(self):
 		self.webView.back()
