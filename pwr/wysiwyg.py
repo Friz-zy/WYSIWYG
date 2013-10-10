@@ -60,6 +60,7 @@ class WYSIWYG(QtGui.QMainWindow):
 
 		self.setWindowTitle(self.title)
 		self.webView = QtWebKit.QWebView()
+		self.webView.settings().setAttribute(QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
 		self.webView.page().linkHovered.connect(self.showLink)
 		self.currentUrl = QtGui.QLineEdit("")
 		self.currentUrl.returnPressed.connect(self.urlChanged)
