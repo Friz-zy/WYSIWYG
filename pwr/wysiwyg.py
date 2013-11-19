@@ -160,6 +160,11 @@ class WYSIWYG(QtGui.QMainWindow):
 		self.searchAction.triggered.connect(self.search)
 		self.searchMenu.addAction(self.searchAction)
 
+		self.replaceAction = QtGui.QAction('replace', self)
+		self.replaceAction.setStatusTip('replace words')
+		self.replaceAction.triggered.connect(self.replace)
+		self.searchMenu.addAction(self.replaceAction)
+
 		# font
 		self.fontMenu = self.menubar.addMenu(QtGui.QIcon.fromTheme(
 					"preferences-desktop-font"),'&Font')
@@ -554,6 +559,9 @@ class WYSIWYG(QtGui.QMainWindow):
 				currentWidget.findText(text, 8)
 			elif isinstance(currentWidget, QtGui.QTextEdit):
 				currentWidget.find(text)
+
+	def replace(self, text):
+		pass
 
 	def getSelectedText(self):
 		currentWidget = self.tabs.currentWidget()
