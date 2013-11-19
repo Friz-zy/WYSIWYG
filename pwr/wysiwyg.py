@@ -155,9 +155,10 @@ class WYSIWYG(QtGui.QMainWindow):
 		self.searchMenu = self.menubar.addMenu('&Search')
 
 		self.searchAction = QtGui.QAction('search', self)
+		self.searchAction.setShortcut('Ctrl+F')
 		self.searchAction.setStatusTip('search words')
 		self.searchAction.triggered.connect(self.search)
-		self.searchMenu.addAction(self.search)
+		self.searchMenu.addAction(self.searchAction)
 
 		# font
 		self.fontMenu = self.menubar.addMenu(QtGui.QIcon.fromTheme(
@@ -538,14 +539,29 @@ class WYSIWYG(QtGui.QMainWindow):
 	def size(self, size):
 		self.executeJs("fontSize", valueArgument=size)
 
-	def search(self, word=""):
-		if not word:
-			word = self.getLineInput("Enter you words for search")
+	def search(self, text=""):
+		if not text:
+			if self.getSelectedText():
+				text = self.getSelectedText()
+			else:
+				text, ok = self.getLineInput("Enter you words for search")
+		if text:
+			currentWidget = self.tabs.currentWidget()
+			if isinstance(currentWidget, QtWebKit.QWebView):
+			# QWebPage::HighlightAllOccurrences	8
+			# Highlights all existing occurrences of a specific string.
+			# (This value was introduced in 4.6.)
+				currentWidget.findText(text, 8)
+			elif isinstance(currentWidget, QtGui.QTextEdit):
+				currentWidget.find(text)
+
+	def getSelectedText(self):
 		currentWidget = self.tabs.currentWidget()
 		if isinstance(currentWidget, QtWebKit.QWebView):
-			pass
+			return currentWidget.selectedText()
 		elif isinstance(currentWidget, QtGui.QTextEdit):
-			pass
+			return currentWidget.textCursor().selectedText()
+
 
 	def insertHtml(self, html=""):
 		if not html:
