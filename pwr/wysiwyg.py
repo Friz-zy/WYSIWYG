@@ -151,6 +151,14 @@ class WYSIWYG(QtGui.QMainWindow):
 		self.toolbarMenu.addAction(self.redoAction)
 		self.toolbarMenu.addSeparator ()
 
+		# search
+		self.searchMenu = self.menubar.addMenu('&Search')
+
+		self.searchAction = QtGui.QAction('search', self)
+		self.searchAction.setStatusTip('search words')
+		self.searchAction.triggered.connect(self.search)
+		self.searchMenu.addAction(self.search)
+
 		# font
 		self.fontMenu = self.menubar.addMenu(QtGui.QIcon.fromTheme(
 					"preferences-desktop-font"),'&Font')
@@ -529,6 +537,15 @@ class WYSIWYG(QtGui.QMainWindow):
 
 	def size(self, size):
 		self.executeJs("fontSize", valueArgument=size)
+
+	def search(self, word=""):
+		if not word:
+			word = self.getLineInput("Enter you words for search")
+		currentWidget = self.tabs.currentWidget()
+		if isinstance(currentWidget, QtWebKit.QWebView):
+			pass
+		elif isinstance(currentWidget, QtGui.QTextEdit):
+			pass
 
 	def insertHtml(self, html=""):
 		if not html:
