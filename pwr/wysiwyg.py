@@ -550,18 +550,23 @@ class WYSIWYG(QtGui.QMainWindow):
 				text = self.getSelectedText()
 			else:
 				text, ok = self.getLineInput("Enter you words for search")
-		if text:
-			currentWidget = self.tabs.currentWidget()
-			if isinstance(currentWidget, QtWebKit.QWebView):
-			# QWebPage::HighlightAllOccurrences	8
-			# Highlights all existing occurrences of a specific string.
-			# (This value was introduced in 4.6.)
-				currentWidget.findText(text, 8)
-			elif isinstance(currentWidget, QtGui.QTextEdit):
-				currentWidget.find(text)
+		currentWidget = self.tabs.currentWidget()
+		if isinstance(currentWidget, QtWebKit.QWebView):
+		# QWebPage::HighlightAllOccurrences	8
+		# Highlights all existing occurrences of a specific string.
+		# (This value was introduced in 4.6.)
+			currentWidget.findText(text, 8)
+		elif isinstance(currentWidget, QtGui.QTextEdit):
+			currentWidget.find(text)
 
-	def replace(self, text):
-		pass
+	def replace(self, text=""):
+		if not text:
+			pass #text, ok = self.getLineInput("Enter you words for replacing")
+		currentWidget = self.tabs.currentWidget()
+		if isinstance(currentWidget, QtWebKit.QWebView):
+			pass
+		elif isinstance(currentWidget, QtGui.QTextEdit):
+			pass
 
 	def getSelectedText(self):
 		currentWidget = self.tabs.currentWidget()
