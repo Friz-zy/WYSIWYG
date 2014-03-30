@@ -61,7 +61,7 @@ class WYSIWYG(QtGui.QMainWindow):
 		self.setWindowTitle(self.title)
 		self.webView = QtWebKit.QWebView()
 		self.webView.settings().setAttribute(
-		  QtWebKit.QWebSettings.JavascriptEnabled, False)
+		  QtWebKit.QWebSettings.JavascriptEnabled, True)
 		self.webView.settings().setAttribute(
 		  QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
 		self.webView.page().linkHovered.connect(self.showLink)
@@ -194,7 +194,7 @@ class WYSIWYG(QtGui.QMainWindow):
 		self.viewMenu = self.menubar.addMenu('&View')
 
 		self.jsRadioButton = QtGui.QRadioButton("Javascript enabled", self)
-		self.jsRadioButton.setChecked(False)
+		self.jsRadioButton.setChecked(True)
 		self.jsRadioButton.clicked.connect(self.enableJs)
 		self.jsAction = QtGui.QWidgetAction(self)
 		self.jsAction.setDefaultWidget(self.jsRadioButton)
