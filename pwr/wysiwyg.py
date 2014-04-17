@@ -65,6 +65,7 @@ class WYSIWYG(QtGui.QMainWindow):
 		self.webView.settings().setAttribute(
 		  QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
 		self.webView.page().linkHovered.connect(self.showLink)
+		self.webView.page().loadFinished.connect(self.afterLoad)
 		self.currentUrl = QtGui.QLineEdit("")
 		self.currentUrl.returnPressed.connect(self.urlChanged)
 		self.textEdit = QtGui.QTextEdit()
@@ -359,21 +360,36 @@ class WYSIWYG(QtGui.QMainWindow):
 				sys.modules[self.__module__].__file__)),
 								"config")
 		self.defaultConfig = os.path.join(self.defaultDirectory, "pwr.conf")
+		self.mmDirectory = os.path.join(self.homeDirectory, "MindMap")
+		self.mmExample = os.path.join(self.homeDirectory, "Mind Map example.html")
 		if not os.path.isdir(self.homeDirectory):
 			try:
 				shutil.copytree(self.defaultDirectory, self.homeDirectory)
 			except:
 				print 1
+		if not os.path.isdir(self.mmDirectory):
+			try:
+				shutil.copytree(os.path.join(os.path.abspath(
+                                os.path.dirname(
+                                sys.modules[self.__module__].__file__)),
+                                "MindMap"), self.mmDirectory)
+			except:
+				print 2
 		if not os.path.isfile(self.homeConfig):
 			try:
 				shutil.copy(self.defaultConfig, self.homeConfig)
 			except:
-				print 2
+				print 3
+		if not os.path.isfile(os.path.join(self.mmDirectory, "Mind Map example.html")):
+			try:
+				shutil.copy(os.path.join(self.mmDirectory, "example.html"), self.mmExample)
+			except:
+				print 4
 		try:
 			self.config = ConfigObj(self.defaultConfig)
 			self.userConfig = ConfigObj(self.homeConfig)
 		except:
-			print 3
+			print 4
 
 		def setConfigField(field, default):
 			if not field and default:
@@ -432,7 +448,6 @@ class WYSIWYG(QtGui.QMainWindow):
 	def urlChanged(self):
 		self.open(self.currentUrl.text())
 
-
 	def open(self, file=None):
 		if self.savePageBeforeClose() == -1:
 			return 0
@@ -443,7 +458,16 @@ class WYSIWYG(QtGui.QMainWindow):
 			self.webView.setUrl(QtCore.QUrl("file://" + file))
 			self.currentUrl.setText(file)
 			self.lastDirectory = os.path.dirname(file)
-			
+
+	def afterLoad(self):
+		data = self.webView.page().mainFrame().toHtml()
+		# hack for mind map
+		if data.find('id="mindmap"') != -1:
+			self.webView.page().setContentEditable(False)
+			self.tabs.setTabEnabled(self.tabs.indexOf(self.textEdit) , False)
+		else:
+			self.webView.page().setContentEditable(True)
+			self.tabs.setTabEnabled(self.tabs.indexOf(self.textEdit), True)
 
 	def savePageBeforeClose(self):
 		if self.webView.page().isModified() or self.textEdit.document().isModified():
@@ -456,7 +480,7 @@ class WYSIWYG(QtGui.QMainWindow):
 			return 1
 
 	def save(self):
-		if self.currentUrl.text():
+		if self.currentUrl.text() and self.currentUrl.text() != self.mmExample:
 			self.saveHtml(self.currentUrl.text())
 		else:
 			self.saveAs()
