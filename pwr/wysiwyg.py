@@ -361,10 +361,12 @@ class WYSIWYG(QtGui.QMainWindow):
 								"config")
 		self.defaultConfig = os.path.join(self.defaultDirectory, "pwr.conf")
 		self.mmDirectory = os.path.join(self.homeDirectory, "MindMap")
-		self.mmExample = os.path.join(self.homeDirectory, "Mind Map example.html")
+		self.mmExample = os.path.join(self.homeDirectory,
+                                      "Mind Map example.html")
 		if not os.path.isdir(self.homeDirectory):
 			try:
-				shutil.copytree(self.defaultDirectory, self.homeDirectory)
+				shutil.copytree(self.defaultDirectory,
+                                self.homeDirectory)
 			except:
 				print 1
 		if not os.path.isdir(self.mmDirectory):
@@ -380,9 +382,11 @@ class WYSIWYG(QtGui.QMainWindow):
 				shutil.copy(self.defaultConfig, self.homeConfig)
 			except:
 				print 3
-		if not os.path.isfile(os.path.join(self.mmDirectory, "Mind Map example.html")):
+		if not os.path.isfile(os.path.join(self.mmDirectory,
+                                     "Mind Map example.html")):
 			try:
-				shutil.copy(os.path.join(self.mmDirectory, "example.html"), self.mmExample)
+				shutil.copy(os.path.join(self.mmDirectory, "example.html"),
+                            self.mmExample)
 			except:
 				print 4
 		try:
@@ -464,7 +468,7 @@ class WYSIWYG(QtGui.QMainWindow):
 		# hack for mind map
 		if data.find('id="mindmap"') != -1:
 			self.webView.page().setContentEditable(False)
-			self.tabs.setTabEnabled(self.tabs.indexOf(self.textEdit) , False)
+			self.tabs.setTabEnabled(self.tabs.indexOf(self.textEdit), False)
 		else:
 			self.webView.page().setContentEditable(True)
 			self.tabs.setTabEnabled(self.tabs.indexOf(self.textEdit), True)
